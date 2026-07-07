@@ -1,0 +1,39 @@
+name: Fix site asset paths
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-paths:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Move uploaded assets into expected directories
+        shell: bash
+        run: |
+          set -e
+          mkdir -p css js assets/images assets/icons
+          if [ -f style.css ] && [ ! -f css/style.css ]; then git mv style.css css/style.css; fi
+          if [ -f main.js ] && [ ! -f js/main.js ]; then git mv main.js js/main.js; fi
+          if [ -f placeholder.jpg ] && [ ! -f assets/images/placeholder.jpg ]; then git mv placeholder.jpg assets/images/placeholder.jpg; fi
+          if [ -f favicon.svg ] && [ ! -f assets/icons/favicon.svg ]; then git mv favicon.svg assets/icons/favicon.svg; fi
+          for file in *.html robots.txt sitemap.xml README.md; do
+            if [ -f "$file" ]; then
+              sed -i 's#https://example.com#https://aa98100-pennystudio.github.io/pennystudio-official#g' "$file"
+            fi
+          done
+          if git diff --quiet; then
+            echo "No changes needed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Fix GitHub Pages asset paths"
+          git push
