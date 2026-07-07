@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://example.com/sitemap.xml
+Sitemap: https://aa98100-pennystudio.github.io/pennystudio-official/sitemap.xml
