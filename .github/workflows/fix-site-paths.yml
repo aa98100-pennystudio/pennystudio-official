@@ -28,6 +28,7 @@ jobs:
               sed -i 's#https://example.com#https://aa98100-pennystudio.github.io/pennystudio-official#g' "$file"
             fi
           done
+
       - name: Update official LINE links
         shell: python
         run: |
@@ -80,35 +81,36 @@ jobs:
                   f'  "use strict";\n\n  const LINE_URL = "{LINE_URL}";\n\n',
                   1,
               )
-              new_line_block = '''  document.querySelectorAll("[data-line-cta]").forEach(function (link) {
-    var href = (link.getAttribute("href") || "").trim();
-
-    if (href === "#" || href === "" || href === "LINE_URL") {
-      link.setAttribute("href", LINE_URL);
-    }
-
-    link.setAttribute("target", "_blank");
-    link.setAttribute("rel", "noopener noreferrer");
-
-    link.addEventListener("click", function () {
-      var currentHref = link.getAttribute("href") || LINE_URL;
-      window.dispatchEvent(new CustomEvent("penny:line-cta-click", {
-        detail: {
-          label: link.textContent.trim(),
-          page: currentPage || "",
-          href: currentHref
-        }
-      }));
-    });
-  });
-
-'''
-              text = re.sub(
+              js_lines = [
+                  '  document.querySelectorAll("[data-line-cta]").forEach(function (link) {',
+                  '    var href = (link.getAttribute("href") || "").trim();',
+                  '',
+                  '    if (href === "#" || href === "" || href === "LINE_URL") {',
+                  '      link.setAttribute("href", LINE_URL);',
+                  '    }',
+                  '',
+                  '    link.setAttribute("target", "_blank");',
+                  '    link.setAttribute("rel", "noopener noreferrer");',
+                  '',
+                  '    link.addEventListener("click", function () {',
+                  '      var currentHref = link.getAttribute("href") || LINE_URL;',
+                  '      window.dispatchEvent(new CustomEvent("penny:line-cta-click", {',
+                  '        detail: {',
+                  '          label: link.textContent.trim(),',
+                  '          page: currentPage || "",',
+                  '          href: currentHref',
+                  '        }',
+                  '      }));',
+                  '    });',
+                  '  });',
+                  '',
+              ]
+              new_line_block = "\n".join(js_lines) + "\n"
+              line_cta_js_pattern = re.compile(
                   r'  document\.querySelectorAll\("\[data-line-cta\]"\)\.forEach\(function \(link\) \{.*?\n  \}\);\n\n(?=  var revealItems)',
-                  new_line_block,
-                  text,
-                  flags=re.S,
+                  re.S,
               )
+              text = line_cta_js_pattern.sub(new_line_block, text)
               text = text.replace(
                   'LINE_URL placeholder clicked. Replace # with the official LINE URL before launch.',
                   '',
@@ -128,6 +130,37 @@ jobs:
               if text != original:
                   write_text(readme_path, text)
 
+          total_line_cta = 0
+          bad_tags = []
+          for path in Path(".").glob("*.html"):
+              text = read_text(path)
+              for tag_match in line_anchor_pattern.finditer(text):
+                  total_line_cta += 1
+                  tag = tag_match.group(0)
+                  if (
+                      f'href="{LINE_URL}"' not in tag
+                      or 'target="_blank"' not in tag
+                      or 'rel="noopener noreferrer"' not in tag
+                  ):
+                      bad_tags.append(f"{path}: {tag}")
+          if bad_tags:
+              raise SystemExit("Bad LINE CTA tags:\n" + "\n".join(bad_tags))
+          if js_path.exists():
+              js_text = read_text(js_path)
+              if 'LINE_URL placeholder clicked' in js_text:
+                  raise SystemExit("Old LINE placeholder console message remains in js/main.js")
+              if f'const LINE_URL = "{LINE_URL}";' not in js_text:
+                  raise SystemExit("LINE_URL constant is missing or incorrect in js/main.js")
+          if readme_path.exists():
+              readme_text = read_text(readme_path)
+              readme_placeholder = chr(96) + 'LINE_URL' + chr(96)
+              if readme_placeholder in readme_text:
+                  raise SystemExit("README.md still contains LINE_URL placeholder")
+          print(f"Validated {total_line_cta} official LINE CTA links.")
+
+      - name: Commit normalized site files
+        shell: bash
+        run: |
           if git diff --quiet; then
             echo "No changes needed."
             exit 0
