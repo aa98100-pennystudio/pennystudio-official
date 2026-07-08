@@ -47,7 +47,7 @@
 
 - 官方 LINE：所有 LINE CTA 已連至 `https://lin.ee/zKgRbTT`。
 - `INSTAGRAM_URL`：目前 Instagram 連結為 `#`。
-- `GOOGLE_BUSINESS_URL`：目前 Google 商家連結為 `#`。
+- `GOOGLE_BUSINESS_URL`：Google 商家連結為 `https://maps.app.goo.gl/C7DK2LivzjPGuZda6?g_st=ifm`。
 - 正式網域：目前 canonical、Open Graph、Schema、robots.txt、sitemap.xml 使用 `https://aa98100-pennystudio.github.io/pennystudio-official/`。
 - 地址：目前使用「桃園市南崁區（正式地址待補）」。
 - 電話：目前使用 `PHONE_PLACEHOLDER`。
