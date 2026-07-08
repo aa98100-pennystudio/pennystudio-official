@@ -1,6 +1,8 @@
 (function () {
   "use strict";
 
+  const LINE_URL = "https://lin.ee/zKgRbTT";
+
   var body = document.body;
   var navToggle = document.querySelector("[data-nav-toggle]");
   var nav = document.querySelector("#site-nav");
@@ -87,20 +89,24 @@
   }
 
   document.querySelectorAll("[data-line-cta]").forEach(function (link) {
-    link.addEventListener("click", function (event) {
-      var href = link.getAttribute("href");
+    var href = (link.getAttribute("href") || "").trim();
+
+    if (href === "#" || href === "" || href === "LINE_URL") {
+      link.setAttribute("href", LINE_URL);
+    }
+
+    link.setAttribute("target", "_blank");
+    link.setAttribute("rel", "noopener noreferrer");
+
+    link.addEventListener("click", function () {
+      var currentHref = link.getAttribute("href") || LINE_URL;
       window.dispatchEvent(new CustomEvent("penny:line-cta-click", {
         detail: {
           label: link.textContent.trim(),
           page: currentPage || "",
-          href: href
+          href: currentHref
         }
       }));
-
-      if (href === "#") {
-        event.preventDefault();
-        console.info("LINE_URL placeholder clicked. Replace # with the official LINE URL before launch.");
-      }
     });
   });
 

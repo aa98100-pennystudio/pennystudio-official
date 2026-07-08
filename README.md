@@ -45,7 +45,7 @@
 
 請在正式部署前替換以下 placeholder：
 
-- `LINE_URL`：目前所有 LINE CTA 連結皆為 `#`。
+- 官方 LINE：所有 LINE CTA 已連至 `https://lin.ee/zKgRbTT`。
 - `INSTAGRAM_URL`：目前 Instagram 連結為 `#`。
 - `GOOGLE_BUSINESS_URL`：目前 Google 商家連結為 `#`。
 - 正式網域：目前 canonical、Open Graph、Schema、robots.txt、sitemap.xml 使用 `https://aa98100-pennystudio.github.io/pennystudio-official/`。
