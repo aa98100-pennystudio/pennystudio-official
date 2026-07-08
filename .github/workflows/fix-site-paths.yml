@@ -28,6 +28,106 @@ jobs:
               sed -i 's#https://example.com#https://aa98100-pennystudio.github.io/pennystudio-official#g' "$file"
             fi
           done
+      - name: Update official LINE links
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          LINE_URL = "https://lin.ee/zKgRbTT"
+          attr_pattern = re.compile(r'\s+(href|target|rel)=("[^"]*"|\'[^\']*\'|[^\s>]+)')
+          line_anchor_pattern = re.compile(r'<a\b(?=[^>]*\bdata-line-cta\b)[^>]*>')
+
+          def read_text(path):
+              return path.read_text(encoding="utf-8-sig")
+
+          def write_text(path, text):
+              path.write_text(text, encoding="utf-8")
+
+          def update_line_anchor(match):
+              tag = attr_pattern.sub("", match.group(0))
+              return re.sub(
+                  r"^<a\b",
+                  f'<a href="{LINE_URL}" target="_blank" rel="noopener noreferrer"',
+                  tag,
+                  count=1,
+              )
+
+          for path in Path(".").glob("*.html"):
+              original = read_text(path)
+              text = line_anchor_pattern.sub(update_line_anchor, original)
+              text = text.replace(
+                  "LINE_URL / INSTAGRAM_URL 待替換；Google 商家已更新",
+                  "INSTAGRAM_URL 待替換；LINE 官方帳號與 Google 商家已更新",
+              )
+              text = text.replace(
+                  "LINE_URL / INSTAGRAM_URL / GOOGLE_BUSINESS_URL 待替換",
+                  "INSTAGRAM_URL / GOOGLE_BUSINESS_URL 待替換；LINE 官方帳號已更新",
+              )
+              text = text.replace(
+                  "第一優先預約入口，正式上線前請替換為 LINE 官方帳號連結。",
+                  "第一優先預約入口，點選下方按鈕即可加入 LINE 官方帳號。",
+              )
+              if text != original:
+                  write_text(path, text)
+
+          js_path = Path("js/main.js")
+          if js_path.exists():
+              original = read_text(js_path)
+              text = re.sub(r'  const LINE_URL = "[^"]*";\n\n', "", original, count=1)
+              text = text.replace(
+                  '  "use strict";\n\n',
+                  f'  "use strict";\n\n  const LINE_URL = "{LINE_URL}";\n\n',
+                  1,
+              )
+              new_line_block = '''  document.querySelectorAll("[data-line-cta]").forEach(function (link) {
+    var href = (link.getAttribute("href") || "").trim();
+
+    if (href === "#" || href === "" || href === "LINE_URL") {
+      link.setAttribute("href", LINE_URL);
+    }
+
+    link.setAttribute("target", "_blank");
+    link.setAttribute("rel", "noopener noreferrer");
+
+    link.addEventListener("click", function () {
+      var currentHref = link.getAttribute("href") || LINE_URL;
+      window.dispatchEvent(new CustomEvent("penny:line-cta-click", {
+        detail: {
+          label: link.textContent.trim(),
+          page: currentPage || "",
+          href: currentHref
+        }
+      }));
+    });
+  });
+
+'''
+              text = re.sub(
+                  r'  document\.querySelectorAll\("\[data-line-cta\]"\)\.forEach\(function \(link\) \{.*?\n  \}\);\n\n(?=  var revealItems)',
+                  new_line_block,
+                  text,
+                  flags=re.S,
+              )
+              text = text.replace(
+                  'LINE_URL placeholder clicked. Replace # with the official LINE URL before launch.',
+                  '',
+              )
+              if text != original:
+                  write_text(js_path, text)
+
+          readme_path = Path("README.md")
+          if readme_path.exists():
+              original = read_text(readme_path)
+              tick = chr(96)
+              text = original.replace(
+                  '- ' + tick + 'LINE_URL' + tick + '：目前所有 LINE CTA 連結皆為 ' + tick + '#' + tick + '。',
+                  '- 官方 LINE：所有 LINE CTA 已連至 ' + tick + LINE_URL + tick + '。',
+              )
+              text = text.replace('LINE_URL', LINE_URL)
+              if text != original:
+                  write_text(readme_path, text)
+
           if git diff --quiet; then
             echo "No changes needed."
             exit 0
@@ -35,5 +135,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Fix GitHub Pages asset paths"
+          git commit -m "Update official LINE links"
           git push
