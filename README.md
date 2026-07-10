@@ -21,7 +21,7 @@
 │   └── main.js
 ├── assets/
 │   ├── images/
-│   │   └── placeholder.jpg
+│   │   └── works/
 │   └── icons/
 │       └── favicon.svg
 ├── robots.txt
@@ -43,7 +43,7 @@
 
 ## 上線前需要替換
 
-請在正式部署前替換以下 placeholder：
+正式部署前請確認以下資訊：
 
 - 官方 LINE：所有 LINE CTA 已連至 `https://lin.ee/zKgRbTT`。
 - `INSTAGRAM_URL`：目前 Instagram 連結為 `#`。
@@ -51,9 +51,9 @@
 - 正式網域：目前 canonical、Open Graph、Schema、robots.txt、sitemap.xml 使用 `https://aa98100-pennystudio.github.io/pennystudio-official/`。
 - 地址：目前使用「桃園市南崁區（正式地址待補）」。
 - 電話：目前使用 `PHONE_PLACEHOLDER`。
-- 真實作品圖片：目前使用 `assets/images/placeholder.jpg`。
-- 真實顧客評價：首頁評價目前為 placeholder 文案。
-- 服務方案與價格：新娘秘書方案區目前為 placeholder。
+- 真實作品圖片：目前使用 `assets/images/works/` 內的網站作品照。
+- 真實顧客評價：首頁評價可再替換為正式授權回饋。
+- 服務方案與價格：新娘秘書方案區可依正式報價再補齊。
 
 ## 部署到 GitHub Pages
 
@@ -77,5 +77,5 @@
 - 不使用外部 CDN。
 - CSS 集中於 `css/style.css`。
 - JavaScript 集中於 `js/main.js`。
-- 互動包含手機導覽列、FAQ accordion、作品分類篩選、返回頂部按鈕與 LINE CTA 事件 placeholder。
+- 互動包含手機導覽列、FAQ accordion、作品分類篩選、返回頂部按鈕與 LINE CTA 事件。
 - 所有頁面皆有 title、meta description、canonical、Open Graph、Twitter Card、Breadcrumb 與 JSON-LD Schema。
