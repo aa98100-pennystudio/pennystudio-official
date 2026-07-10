@@ -550,14 +550,17 @@ p {
 
 .image-card {
   overflow: hidden;
+  background: #F8F4EF;
 }
 
 .image-card img,
 .case-card img {
   width: 100%;
   aspect-ratio: 4 / 3;
-  object-fit: cover;
-  background: var(--color-nude-pink);
+  display: block;
+  object-fit: contain;
+  object-position: center center;
+  background: #F8F4EF;
 }
 
 .image-card-body,
