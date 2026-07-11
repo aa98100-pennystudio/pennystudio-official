@@ -564,6 +564,13 @@ p {
   background: #F8F4EF;
 }
 
+.portrait-gallery .image-card img,
+.portrait-gallery .case-card img {
+  aspect-ratio: 9 / 16;
+  object-fit: contain;
+  object-position: center center;
+}
+
 .image-card-body,
 .case-card-body {
   display: grid;
