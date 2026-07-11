@@ -260,6 +260,11 @@ body[data-page="bridal"] .hero-bg img {
   object-position: center 14%;
 }
 
+/* Keep both newlyweds' heads within the works page hero crop. */
+body[data-page="works"] .hero-bg img {
+  object-position: center 18%;
+}
+
 .hero::after {
   position: absolute;
   inset: 0;
