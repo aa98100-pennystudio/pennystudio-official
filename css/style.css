@@ -255,6 +255,11 @@ body[data-page="brow"] .hero-bg img {
   object-position: center 42%;
 }
 
+/* Align the bridal portrait's hairline with the top of the hero image. */
+body[data-page="bridal"] .hero-bg img {
+  object-position: center 14%;
+}
+
 .hero::after {
   position: absolute;
   inset: 0;
