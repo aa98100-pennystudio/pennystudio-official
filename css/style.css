@@ -250,6 +250,11 @@ button {
   object-position: center center;
 }
 
+/* Keep the brow service hero focused on both eyes and eyebrows. */
+body[data-page="brow"] .hero-bg img {
+  object-position: center 42%;
+}
+
 .hero::after {
   position: absolute;
   inset: 0;
