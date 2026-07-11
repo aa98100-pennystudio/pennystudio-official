@@ -49,7 +49,7 @@
 - `INSTAGRAM_URL`：目前 Instagram 連結為 `#`。
 - `GOOGLE_BUSINESS_URL`：Google 商家連結為 `https://maps.app.goo.gl/C7DK2LivzjPGuZda6?g_st=ifm`。
 - 正式網域：目前 canonical、Open Graph、Schema、robots.txt、sitemap.xml 使用 `https://aa98100-pennystudio.github.io/pennystudio-official/`。
-- 地址：目前使用「桃園市南崁區（正式地址待補）」。
+- 地址：桃園市蘆竹區南崁。
 - 電話：目前使用 `PHONE_PLACEHOLDER`。
 - 真實作品圖片：目前使用 `assets/images/works/` 內的網站作品照。
 - 真實顧客評價：首頁評價可再替換為正式授權回饋。
